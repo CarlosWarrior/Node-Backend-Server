@@ -22,7 +22,7 @@ if(process.env.production){
 	}
 	if((!existsSync(key) || !existsSync(cert)) ){
 		key = local_key
-		cert = "./storage/local-public.crt"
+		cert = local_cert
 		console.log("Certificate and Key missing, generating local ones...")
 		const data = require("./cert")({ca:true, protocol:process.env.protocol, host:process.env.host})
 		writeFileSync(cert, data["Authority"]["Cert"])
