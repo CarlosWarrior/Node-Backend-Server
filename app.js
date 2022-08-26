@@ -8,6 +8,8 @@ app.use(express.urlencoded({extended: true}))
 app.use('/', require('./src/routes'))
 async function init(){
   console.log('app running on port '+process.env.port_app)
+	const DB = require("./src/db")
+	DB.init()
 }
 if(process.env.production){
 	const local_key = "./storage/local-private.key"
