@@ -17,14 +17,15 @@ const schemas = {
 	},
 	Task: {
 		name:"tasks",
-		setup: "create table tasks (id integer not null unique primary key auto_increment, title varchar(256) not null, description text not null, status varchar(12) not null, date varchar(24) not null, comments text, asignee varchar(12));",
+		setup: "create table tasks (id integer not null unique primary key auto_increment, title varchar(256) not null, description text not null, status varchar(12) not null, date varchar(24) not null, asignee varchar(12), comments text, tags text);",
 		attrs:{
 			title: {type:'string', required:true},
 			description: {type:'string', required:true},
 			status: {type:'string', required:true},
 			date: {type: value => !isNaN(new Date(value)), required:true},
-			comments: {type: 'string', required:false},
 			asignee: {type: 'string', required:false},
+			comments: {type: 'string', required:false},
+			tags: {type: 'string', required:false},
 		}
 	},
 	TaskView: {

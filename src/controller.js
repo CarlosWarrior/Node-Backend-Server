@@ -13,9 +13,14 @@ async function list(req, res, next){
     const data = await DB.client.read(query)
     res.send(data)
 }
+async function read(req, res, next){
+    const task = await find(req)
+    if(!task) return raise({status:404, message:"task not found"})
+    res.send(task)
+}
 async function create(req, res, next){
     const {task, errors} = builders.Task.create(req.body)
-    if(Object.keys(errors).length > 0) return raise({status:400, message:"validation error", error:JSON.stringify(errors)})
+    if(Object.keys(errors).length > 0) return raise({status:400, message:"validation error", errors:JSON.stringify(errors)})
     const cols = Object.keys(schemas.Task.attrs)
     const values = cols.map(c => task[c])
     const query = `insert into tasks (${cols.join(',')}) values(${values.map(() => '?').join(',')});`
@@ -51,7 +56,7 @@ async function find(req){
 }
 module.exports = {
     brief,
-    list,
+    read,
     create,
     update,
     remove,
