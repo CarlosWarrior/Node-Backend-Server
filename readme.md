@@ -46,7 +46,7 @@ node-forge
  - Used as flag to determine wether to initialize the database
 
 ### port_app
- - Web port where the servber will listen
+ - Web port where the server will listen
 
 ### host
  - App host to be attached to the server
