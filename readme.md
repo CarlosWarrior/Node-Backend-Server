@@ -46,7 +46,7 @@ node-forge
  - Used as flag to determine wether to initialize the database
 
 ### port_app
- - Web port where the servber will listen
+ - Web port where the server will listen
 
 ### host
  - App host to be attached to the server
@@ -72,6 +72,8 @@ node-forge
 
 ### db_admin_password
  - Password of the admin user
+ 
+#### An example fiile `.env.example` file is provided with the needed keys; by default the variables `app_key`, `production`, and `initializeDB` are set here as an example.
 
 ## Documentation
 > Method documentation is provided as a postman file `BAP.postman_collection.json`
