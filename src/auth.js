@@ -42,7 +42,6 @@ module.exports = {
   	const attempt = compareSync(password, userPassword)
     if(attempt){
 			console.log(username,"signing...")
-			//app_key = forge.util.bytesToHex(forge.random.getBytesSync(16))
 			let token = await sign({user:{username}, time: new Date().toISOString()}, process.env.app_key)
 			res.set("x-user-token", token)
 			res.send(token)

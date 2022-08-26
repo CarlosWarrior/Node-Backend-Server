@@ -3,18 +3,18 @@ const {schemas} = require("./models")
 
 const client = {
   host : process.env.db_host,
+  database : process.env.db_database,
   user : process.env.db_user,
   password : process.env.db_password,
-  database : process.env.db_database,
   waitForConnections: true,
   connectionLimit: 0,
   queueLimit: 0
 }
 const admin = {
   host : process.env.db_host,
+  database : process.env.db_database,
   user : process.env.db_admin,
   password : process.env.db_admin_password,
-  database : process.env.db_admin_database,
 }
 
 function data(err, data, meta, resolve, reject) {
