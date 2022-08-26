@@ -8,5 +8,5 @@ class AppError extends Error {
 		Error.captureStackTrace(this, this.constructor)
 	}
 }
-function Raise({ status, message, error }) { throw new AppError({ status, message, error }) }
+function Raise({ status, message, errors }) { throw new AppError({ status, message, errors }) }
 module.exports = Raise
