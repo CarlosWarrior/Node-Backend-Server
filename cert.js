@@ -1,4 +1,4 @@
-const forge = require('node-forge')
+const { asn1, random, pki, util, md} = require('node-forge')
 
 const assertPositive = (hexstr)=>{//RFC 4.1.2.2 must be signed positive integer
 	var msb = parseInt(hexstr[0], 16)
@@ -8,16 +8,16 @@ const assertPositive = (hexstr)=>{//RFC 4.1.2.2 must be signed positive integer
 }
 
 function verify(cert){
-	const CA = forge.pki.createCaStore()
+	const CA = pki.createCaStore()
 	CA.addCertificate(cert)
-	forge.pki.verifyCertificateChain(CA, [cert])
+	pki.verifyCertificateChain(CA, [cert])
 }
 
 function createAuthorithy(keyPair, identity, extensions, years){
-	const auth = forge.random.getBytesSync(9)
-	const cert = forge.pki.createCertificate()
+	const auth = random.getBytesSync(9)
+	const cert = pki.createCertificate()
 	
-	cert.serialNumber = assertPositive(forge.util.bytesToHex(auth))
+	cert.serialNumber = assertPositive(util.bytesToHex(auth))
 	cert.validity.notBefore = new Date();
 	cert.validity.notAfter = new Date();
 	cert.validity.notAfter.setFullYear(cert.validity.notBefore.getFullYear() + years)
@@ -25,10 +25,10 @@ function createAuthorithy(keyPair, identity, extensions, years){
 	cert.setIssuer(identity)
 	cert.publicKey = keyPair.publicKey
 	cert.setExtensions(extensions)
-	cert.sign(keyPair.privateKey, forge.md.sha256.create())
+	cert.sign(keyPair.privateKey, md.sha256.create())
 	
-	const fingerprint = forge.md.sha1.create()
-		.update( forge.asn1.toDer(forge.pki.certificateToAsn1(cert)).getBytes() ).digest().toHex()
+	const fingerprint = md.sha1.create()
+		.update( asn1.toDer(pki.certificateToAsn1(cert)).getBytes() ).digest().toHex()
 		.match(/.{2}/g).join(':')
 	
 	try {
@@ -38,18 +38,18 @@ function createAuthorithy(keyPair, identity, extensions, years){
 	}
 
 	return{
-		["Cert"]: forge.pki.certificateToPem(cert),
-		["Private"]: forge.pki.privateKeyToPem(keyPair.privateKey),
-		["Public"]: forge.pki.publicKeyToPem(keyPair.publicKey),
+		["Cert"]: pki.certificateToPem(cert),
+		["Private"]: pki.privateKeyToPem(keyPair.privateKey),
+		["Public"]: pki.publicKeyToPem(keyPair.publicKey),
 		["Fingerprint"]: fingerprint,
 	}	
 }
 
 function createCertificate(privateKey, identity, years, length){
-	const app = forge.random.getBytesSync(9)
-	const subkeyPair = forge.pki.rsa.generateKeyPair(length)
-	const cert = forge.pki.createCertificate()
-	cert.serialNumber = assertPositive(forge.util.bytesToHex(app))
+	const app = random.getBytesSync(9)
+	const subkeyPair = pki.rsa.generateKeyPair(length)
+	const cert = pki.createCertificate()
+	cert.serialNumber = assertPositive(util.bytesToHex(app))
 	cert.validity.notBefore = new Date()
 	cert.validity.notAfter = new Date()
 	cert.validity.notAfter.setFullYear(cert.validity.notBefore.getFullYear() + years)
@@ -59,9 +59,9 @@ function createCertificate(privateKey, identity, years, length){
 	cert.setIssuer(sub_identity)
 	cert.publicKey = subkeyPair.publicKey
 
-	cert.sign(privateKey, forge.md.sha256.create())
+	cert.sign(privateKey, md.sha256.create())
 
-	return forge.pki.certificateToPem(cert)
+	return pki.certificateToPem(cert)
 }
 
 module.exports = ({
@@ -88,10 +88,10 @@ module.exports = ({
 	extensions = extensions || baseExtentions
 
 	const data = {}
-	const keyPair =  forge.pki.rsa.generateKeyPair(length)
+	const keyPair =  pki.rsa.generateKeyPair(length)
 	if(ca) data["Authority"] = createAuthorithy(keyPair, identity, extensions, years)
 	if(sub){
-		privateKey =  privateKey ? forge.pki.privateKeyFromPem(privateKey) : keyPair.privateKey
+		privateKey =  privateKey ? pki.privateKeyFromPem(privateKey) : keyPair.privateKey
 		data["Client"] = createCertificate(privateKey, identity, years, length)
 	}
 	return data
