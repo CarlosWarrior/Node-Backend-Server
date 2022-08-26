@@ -59,8 +59,8 @@ const builders = {
 		create: (newTask) => {
 			const errors = {}
 			const task = Object.keys(schemas.Task.attrs).reduce((_attrs, attr) => {
-				const {type, required} = schemas.Task.attrs
 				const value = newTask[attr]
+				const {type, required} = schemas.Task.attrs[attr]
 				if(required && !value)
 					errors[attr] = "required field"
 				if( !(type instanceof Function && type(value) || typeof(value) == type) )
@@ -71,17 +71,17 @@ const builders = {
 			}, {})
 			return {task, errors}
 		},
-		update: (newTask, existingTask) => {
+		update: (existingTask, newTask) => {
 			const errors = {}
 			const task = Object.keys(schemas.Task.attrs).reduce((_attrs, attr) => {
-				const {type, required} = schemas.Task.attrs
 				const value = newTask[attr]
-				if(required && !value)
-					errors[attr] = "required field"
-				if( !(type instanceof Function && type(value) || typeof(value) == type) )
-					errors[attr] = "wrong type"
-				else if(`${existingTask[attr]}` != `${value}`)
-					_attrs[attr] = value
+				const {type, required} = schemas.Task.attrs[attr]
+				if(value){
+					if( !(type instanceof Function && type(value) || typeof(value) == type) )
+						errors[attr] = "wrong type"
+					else if(`${existingTask[attr]}` != `${value}`)
+						_attrs[attr] = value
+				}
 				return _attrs
 			}, {})
 			return {task, errors}

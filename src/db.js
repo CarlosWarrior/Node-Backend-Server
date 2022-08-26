@@ -52,7 +52,7 @@ async function write(query, values){
   const successfull = await connection.execute(query, values)
   return successfull > 0
 }
-async function remove(query){
+async function remove(query, values){
   const connection = await _connection
   const successfull = await connection.execute(query, values)
   return successfull > 0
