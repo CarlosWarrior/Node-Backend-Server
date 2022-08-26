@@ -1,4 +1,5 @@
 require('dotenv').config()
+process.env.initializeDB && require("./src/db").init()
 const {readFileSync, existsSync, writeFileSync} = require('fs')
 const express = require('express')
 const app = express()
@@ -7,9 +8,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use('/', require('./src/routes'))
 async function init(){
-  console.log('app running on port '+process.env.port_app)
-	const DB = require("./src/db")
-	DB.init()
+  console.log('app running on port '+process.env.port_app)	
 }
 if(process.env.production){
 	const local_key = "./storage/local-private.key"
